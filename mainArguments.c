@@ -1,18 +1,24 @@
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
 
 
-FILE* openInputFile(char* n)
+//Opens and stores text file
+FILE * openInputFile(char* n)
 {       
-    FILE * uf;
+    FILE * openedFile = fopen(n, "r");
 
-    uf = fopen(n, "r+");
-    return uf;
-}
+    if (openedFile == NULL) 
+    {
+        printf("File couldn't be opened\n");
+    }
 
-char* readInputFile(FILE* k)
+    return openedFile;
+}   
+
+int readInputFile(FILE* k)
 {
-    int readFile = fprintf(k);
+    int readFile = fprintf//(IDK what to put here);
     return readFile;
 }
 
@@ -30,14 +36,10 @@ void decrypt(void)
 
 int main( int argc, char *argv[] ) 
 {
-   FILE* givenFile;
    char * mode =  argv[1];
    char * fileName =  argv[2];
 
    printf("Mode: %s\nFile Name: %s\n", mode, fileName);
-
-   givenFile = openInputFile(fileName);
-   
 
 
    return 0;
