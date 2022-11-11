@@ -20,6 +20,8 @@ FILE* decryptFile(FILE* inputFile, FILE* outputFile);
 
 int main(void)
 {
+
+    // This is all testing in the main function
     char* sampleTextFile = ("wordtest.txt");
     char* sampleNewFile = ("postEncryption.crp");
 
