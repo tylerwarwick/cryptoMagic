@@ -20,27 +20,13 @@ FILE* decryptFile(FILE* inputFile, FILE* outputFile);
 
 int main(void)
 {
+    FILE* x = openInputFile("postEncryption2.crp");
+    FILE* y = openNewFile("wordtest2.txt");
 
-    // This is all testing in the main function
-    char* sampleTextFile = ("wordtest.txt");
-    char* sampleNewFile = ("postEncryption.crp");
+    FILE* c = decryptFile(x, y);
 
-    char* encryptedFile = ("decryptionTest.crp");
-    char* decryptedFile = ("postDecryption.txt");
-
-    FILE* inputFile = openInputFile(sampleTextFile);
-    FILE* newFile = openNewFile(sampleNewFile);
-
-    FILE* inputFile2 = openInputFile(encryptedFile);
-    FILE* newFile2 = openInputFile(decryptedFile);
-
-    
-    FILE* x = encryptFile(inputFile, newFile);
-    //FILE* x = decryptFile();
-
-
-    fclose(inputFile);
-    fclose(newFile);
+    fclose(x);
+    fclose(y);
 }
 
 //Opens file for us to write to
@@ -177,9 +163,8 @@ FILE* decryptFile(FILE* inputFile, FILE* outputFile)
                 fprintf(outputFile, "%c", outChar);
             
             }
-
-            fprintf(outputFile, "%s", newLine);
         }
+        fprintf(outputFile, "%s", newLine);
     }   
     return outputFile;
 }
