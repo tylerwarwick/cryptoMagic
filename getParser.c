@@ -12,11 +12,10 @@ int main(void)
     const char* space = " ";
     char* token = strtok(emptyArray, space);
 
-    while(token != NULL ) {
+    while(token != NULL ) 
+    {
       printf( " %s\n", token );
-    
-      token = strtok(NULL, emptyArray);
-   }
-    printf("\n%s", emptyArray);
+      token = strtok(NULL, space);
+    }
 }
 
