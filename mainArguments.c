@@ -21,51 +21,80 @@ FILE* encryptFile(FILE* inputFile, FILE* outputFile);
 FILE* decryptFile(FILE* inputFile, FILE* outputFile);
 
 //Gets base file name and returns index to append file extension at
-void getBaseFileName(char* fullFileName, char* emptyArray, int mode);
-
 //Appends file type extension
 //Mode: 1 = Encrypt, 2 = Decrypt
-void appendFileType(char* outputFileName, int appendLocation, int mode);
+void createOutputFileName(char* fullFileName, char* emptyArray, int mode);
 
 int main( int argc, char *argv[] ) 
 {
-   //Initialize both files first
-   FILE* inputFile;
-   FILE* outputFile;
-
-   char* inputFileName;
-   char outputFileName[30];
-   int extensionMode;
-
-
-   //User only inputs a file name, encryption is assumed
-   if (argc == 2)
+   //Only initialize these values if we have an argument from main function
+   //Stops segmentation faults
+   if (argc > 1 && argc < 4)
    {
-      //Get input file name
-      inputFileName = argv[1];
+      //Initialize both files first
+      FILE* inputFile;
+      FILE* outputFile;
 
-      //Get extension type for output file
-      extensionMode = 1;
-   }
-   
-   //User inputs mode and filename
-   else if (argc == 3)
-   {
-      //Get input file name
-      inputFileName = argv[2];
-      char* mode = argv[1];
-     
-      //Get extension type for output file
-      if (mode[1] == 'E' || mode[1] == 'e')
+      char* inputFileName;
+      char outputFileName[30];
+      int extensionMode;
+
+
+      //User only inputs a file name, encryption is assumed
+      if (argc == 2)
       {
+         //Get input file name
+         inputFileName = argv[1];
+
+         //Get extension type for output file
          extensionMode = 1;
       }
       
-      else if (mode[1] == 'D' || mode[1] == 'd')
+      //User inputs mode and filename
+      else if (argc == 3)
       {
-         extensionMode = 2;
+         //Get input file name
+         inputFileName = argv[2];
+         char* mode = argv[1];
+      
+         //Get extension type for output file
+         if (mode[1] == 'E' || mode[1] == 'e')
+         {
+            extensionMode = 1;
+         }
+         
+         else if (mode[1] == 'D' || mode[1] == 'd')
+         {
+            extensionMode = 2;
+         }
       }
-   }
+
+      
+      //Get the base file name to name our output file
+      //Appends file type extension
+      //Mode: 1 = Encrypt, 2 = Decrypt
+      createOutputFileName(inputFileName, outputFileName, extensionMode);
+      
+      //Open the input file
+      //Open output file with proper name and extension
+      inputFile = openInputFile(inputFileName);
+      outputFile = openOutputFile(outputFileName);
+      
+      if (extensionMode == 1)
+      {
+         encryptFile(inputFile, outputFile);
+         printf("Encrypted %s, resulting in %s\n", inputFileName, outputFileName);
+      }
+      
+      else if (extensionMode == 2)
+      {
+         decryptFile(inputFile, outputFile);
+      }
+
+
+      fclose(inputFile);
+      fclose(outputFile);
+   }  
 
    else
    {
@@ -74,36 +103,13 @@ int main( int argc, char *argv[] )
       printf("Example format: -E sampleFileName.txt\n");
    }
 
-   //Get the base file name to name our output file
-   //Appends file type extension
-   //Mode: 1 = Encrypt, 2 = Decrypt
-   getBaseFileName(inputFileName, outputFileName, extensionMode);
-   printf("%s\n", outputFileName);
-   
-   //Open the input file
-   //Open output file with proper name and extension
-   inputFile = openInputFile(inputFileName);
-   outputFile = openOutputFile(outputFileName);
-     
-   if (extensionMode == 1)
-   {
-      encryptFile(inputFile, outputFile);
-      printf("Encrypted %s, resulting in %s\n", inputFileName, outputFileName);
-   }
-   
-   else if (extensionMode == 2)
-   {
-      decryptFile(inputFile, outputFile);
-   }
-
-
-   fclose(inputFile);
-   fclose(outputFile);
    return 0;
  
+
 }
 
-void getBaseFileName(char fullFileName[], char emptyArray[30], int mode)
+
+void createOutputFileName(char fullFileName[], char emptyArray[30], int mode)
 {
    int appendHere;
    int length = strlen(fullFileName);
@@ -141,6 +147,7 @@ FILE* openOutputFile(char* n)
     if (writingFile == NULL) 
     {
         printf("Output file couldn't be opened\n");
+        exit(1);
     }
 
     return writingFile;
@@ -154,6 +161,7 @@ FILE* openInputFile(char* n)
     if (readingFile == NULL) 
     {
         printf("Input file couldn't be opened\n");
+        exit(1);
     }
 
     return readingFile;
@@ -183,7 +191,7 @@ int hexStringToDecimal(char c1, char c2)
     return result;
 }
 
-
+//Encrypts text files
 FILE* encryptFile(FILE* inputFile, FILE* outputFile)
 {
     char lineContents[121];
@@ -240,6 +248,7 @@ FILE* encryptFile(FILE* inputFile, FILE* outputFile)
     return outputFile;
 }
 
+//Decrypts crp files
 FILE* decryptFile(FILE* inputFile, FILE* outputFile)
 {   
     char* tab = "\t";
