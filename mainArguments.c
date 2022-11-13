@@ -89,6 +89,7 @@ int main( int argc, char *argv[] )
       else if (extensionMode == 2)
       {
          decryptFile(inputFile, outputFile);
+         printf("Decrypted %s, resulting in %s\n", inputFileName, outputFileName);
       }
 
 
@@ -114,7 +115,9 @@ void createOutputFileName(char fullFileName[], char emptyArray[30], int mode)
    int appendHere;
    int length = strlen(fullFileName);
    for (int i = 0; i < length; i++)
-   {
+   {  
+        //If we run into a period or string terminator we stop
+        //we now can append the file extension to the basefilename
         char currentChar = fullFileName[i];
         if (currentChar == 46 || currentChar == '\0')
         {   
@@ -128,6 +131,7 @@ void createOutputFileName(char fullFileName[], char emptyArray[30], int mode)
         }
    }
 
+   //Appends proper file extenstion
    if (mode == 1)
    {
       strcat(emptyArray, ".crp");
