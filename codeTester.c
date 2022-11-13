@@ -1,34 +1,20 @@
 #include <stdio.h>
 #include <string.h>
-#include <stdlib.h>
 
-//Opens and stores text file
-FILE* openInputFile(char* n);
+//WORKS
+FILE* openInputFile(char* n)
+{       
+    FILE * readingFile = fopen(n, "r");
+    if (readingFile == NULL) 
+    {
+        printf("Input file couldn't be opened\n");
+    }
 
-//Opens file for us to write to
-FILE* openNewFile(char* n);
+    return readingFile;
+    
+}   
 
-int hexStringToInt(char c);
-
-//Converts hex to ASCII values
-int hexStringToDecimal(char c1, char c2);
-
-//Encrypts and decrypts files
-FILE* encryptFile(FILE* inputFile, FILE* outputFile);
-FILE* decryptFile(FILE* inputFile, FILE* outputFile);
-
-
-int main(void)
-{
-    FILE* x = openInputFile("crpTestFile.crp");
-    FILE* y = openNewFile("decryptW.txt");
-
-    FILE* c = decryptFile(x, y);
-
-    fclose(x);
-    fclose(y);
-}
-
+//WORKS
 //Opens file for us to write to
 FILE* openNewFile(char* n)
 {       
@@ -41,19 +27,36 @@ FILE* openNewFile(char* n)
     return writingFile;
     
 }   
+//WORKS
+void getBaseFileName(char fullFileName[], char emptyArray[30], int mode)
+{
+   int appendHere;
+   int length = strlen(fullFileName);
+   for (int i = 0; i < length; i++)
+   {
+        char currentChar = fullFileName[i];
+        if (currentChar == 46 || currentChar == '\0')
+        {   
+            appendHere = i;
+            i = length;
+        }
 
-//Opens and stores text file
-FILE* openInputFile(char* n)
-{       
-    FILE * readingFile = fopen(n, "r");
-    if (readingFile == NULL) 
-    {
-        printf("Input file couldn't be opened\n");
-    }
+        else
+        {
+            emptyArray[i] = fullFileName[i];
+        }
+   }
 
-    return readingFile;
-    
-}   
+   if (mode == 1)
+   {
+      strcat(emptyArray, ".txt");
+   }
+
+   else if (mode == 2)
+   {
+      strcat(emptyArray, ".crp");
+   }
+}
 
 //Converts char characters from hex values into integers
 //Does not convert integer values from hex values
@@ -77,7 +80,6 @@ int hexStringToDecimal(char c1, char c2)
     int result = newc1 + newc2;
     return result;
 }
-
 
 FILE* encryptFile(FILE* inputFile, FILE* outputFile)
 {
@@ -135,39 +137,41 @@ FILE* encryptFile(FILE* inputFile, FILE* outputFile)
     return outputFile;
 }
 
-FILE* decryptFile(FILE* inputFile, FILE* outputFile)
-{   
-    char* tab = "\t";
-    char lineContents[256];
-    char* newLine= "\n";
 
-    //Get a line from the file until end of file
-    while (fgets(lineContents, 120, inputFile) != NULL)
-    {   
-        //Parse over every character of line 
-        for (int i = 0; lineContents[i] != '\0'; i += 2) 
-        {
-            if (lineContents[i] == 'T' && lineContents[i + 1] == 'T') 
-            {
-                fprintf(outputFile, "%s", tab);
-            }
 
-            else
-            {
-                int outChar;
-                outChar = hexStringToDecimal(lineContents[i], lineContents[i + 1]);
-                outChar += 16;
+int main(int argc, char *argv[]) 
+{
+    //Initialize both files first
+    FILE* inputFile;
+    FILE* outputFile;
 
-                if (outChar > 127)
-                {
-                    outChar = (outChar - 144) + 32;
-                }
+    char* inputFileName;
+    char outputFileName[30];
+    int extensionMode = 2;
 
-                fprintf(outputFile, "%c", outChar);
-            
-            }
-        }
-        fprintf(outputFile, "%s", newLine);
-    }   
-    return outputFile;
+    if (argc == 2)
+   {
+      //Get input file name
+      inputFileName = argv[1];
+   }
+   
+   //User inputs mode and filename
+   else if (argc == 3)
+   {
+      //Get input file name
+      inputFileName = argv[2];
+      char* mode = argv[1];
+   }
+
+    getBaseFileName(inputFileName, outputFileName, extensionMode);
+    printf("%s\n", outputFileName);
+
+
+    FILE* k = openInputFile(inputFileName);
+    FILE* p = openNewFile(outputFileName);
+
+    encryptFile(k, p);
+
+    return 0;
+    
 }
