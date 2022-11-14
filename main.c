@@ -114,7 +114,7 @@ void createOutputFileName(char fullFileName[], char emptyArray[30], int mode)
 {
    int appendHere;
    int length = strlen(fullFileName);
-   for (int i = 0; i < length; i++)
+   /* for (int i = 0; i < length; i++)
    {  
         //If we run into a period or string terminator we stop
         //we now can append the file extension to the basefilename
@@ -130,6 +130,8 @@ void createOutputFileName(char fullFileName[], char emptyArray[30], int mode)
             emptyArray[i] = fullFileName[i];
         }
    }
+*/
+    emptyArray = strtok(fullFileName, ".");
 
    //Appends proper file extenstion
    if (mode == 1)
