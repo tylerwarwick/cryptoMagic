@@ -27,15 +27,34 @@ void createOutputFileName(char* fullFileName, char* emptyArray, int mode);
 
 int main(void) 
 {   
+    //Explains how to use program
     printf("Please enter your choice for either encrypt or decrypt as well as the filename of your choosing\n");
-    printf("Example format: -E sampleFileName.txt\n");
-    printf("Example format: -D sampleFileName.txt\n");
-    printf("Example format (Encryption Assumed): sampleFileName.txt\n");
+    printf("Encrypt Example format: -E sampleFileName.txt\n");
+    printf("Decrypt Example format: -D sampleFileName.txt\n");
+    printf("If no mode is chosen, encryption is assumed\n\n");
 
-    gets()
+    //Gets user input and stores as an array of strings
+    //Similar to argc and argv
+    char input[1024];
+    char *inputStrings[256];            
+                                
+    char delimit[]=" \t\r\n\v\f"; 
+    int argumentCounter = 0;
+
+    if(fgets(input, sizeof input, stdin))                             
+        {                                        
+            inputStrings[argumentCounter] = strtok(input, delimit);    
+            while(inputStrings[argumentCounter] != NULL)                    
+            {
+                argumentCounter++;
+                inputStrings[argumentCounter]=strtok(NULL,delimit);
+            }
+        }
+
+
     //Only initialize these values if we have an argument from main function
-    //Stops segmentation faults
-    if (argc > 1 && argc < 4)
+    //Stops segmentation faults 
+    if (argumentCounter > 0 && argumentCounter < 3)
     {
         //Initialize both files first
         FILE* inputFile;
@@ -47,21 +66,21 @@ int main(void)
 
 
         //User only inputs a file name, encryption is assumed
-        if (argc == 2)
+        if (argumentCounter == 1)
         {
             //Get input file name
-            inputFileName = argv[1];
+            inputFileName = inputStrings[0];
 
             //Get extension type for output file
             extensionMode = 1;
         }
       
         //User inputs mode and filename
-        else if (argc == 3)
+        else if (argumentCounter == 2)
         {
             //Get input file name
-            inputFileName = argv[2];
-            char* mode = argv[1];
+            inputFileName = inputStrings[1];
+            char* mode = inputStrings[0];
       
             //Get extension type for output file
             if (mode[1] == 'E' || mode[1] == 'e')
@@ -113,11 +132,12 @@ int main(void)
 
 void createOutputFileName(char fullFileName[], char emptyArray[30], int mode)
 {
+
    int appendHere;
    int length = strlen(fullFileName);
    for (int i = 0; i < length; i++)
    {  
-        //If we run into a period or string terminator we stop
+        //If we run into a period or inputStrings terminator we stop
         //we now can append the file extension to the basefilename
         char currentChar = fullFileName[i];
         if (currentChar == 46 || currentChar == '\0')
@@ -131,6 +151,7 @@ void createOutputFileName(char fullFileName[], char emptyArray[30], int mode)
             emptyArray[i] = fullFileName[i];
         }
    }
+    
 
    //Appends proper file extenstion
    if (mode == 1)
